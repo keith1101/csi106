@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSI MultiChoice Exam</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f9;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 40px;
+  }
+  .chapter-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #3498db;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+  }
+  .question-container {
+    margin-bottom: 25px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  .question-container:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  .question {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  .answers div {
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .answers div:hover {
+      background-color: #ecf0f1;
+  }
+  .correct {
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    color: #155724;
+    font-weight: bold;
+  }
+  .incorrect {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+    color: #721c24;
+  }
+  .answered .answers div:not(.correct) {
+      cursor: default;
+      opacity: 0.7;
+  }
+   .answered .answers div:hover {
+      background-color: initial;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>CSI MultiChoice Exam</h1>
+
+<div id="quiz"></div>
+
+<script>
+const quizData = [
+    // Chapter 1
+    { chapter: 1, question: "1. According to general consensus, which of the following companies won the mainframe battle of the first electronic computer generation?", answers: { "a": "IBM", "b": "Remington Rand", "c": "Honeywell", "d": "RCA" }, correct: "a" },
+    { chapter: 1, question: "2. Using the Berners-Lee protocols, Marc Andreesen created the browser that had the most impact beyond the walls of academia: ____.", answers: { "a": "Internet Explorer", "b": "Next", "c": "Mosaic", "d": "Impact" }, correct: "c" },
+    { chapter: 1, question: "3. ENIAC was a functioning and useful computer that could perform both arithmetic and ____ operations.", answers: { "a": "standard", "b": "surgical", "c": "linguistic", "d": "logical" }, correct: "d" },
+    { chapter: 1, question: "4. Which of the following technologies made electronic computing possible?", answers: { "a": "reusable pins", "b": "punch cards", "c": "vacuum tubes", "d": "keyboards" }, correct: "c" },
+    { chapter: 1, question: "5. The loose collection of networks called \"the Internet\" is the short form of which of the following words?", answers: { "a": "internetwork", "b": "internexus", "c": "interarpanet", "d": "interconnect" }, correct: "a" },
+    { chapter: 1, question: "6. Based on low cost, available source code, and reputed reliability, which of the following operating systems presents the greatest competitive threat to Windows?", answers: { "a": "Crescent", "b": "Star", "c": "Linux", "d": "OS/2" }, correct: "c" },
+    { chapter: 1, question: "7. In 1823 ____ invented a mechanical device that did addition, subtraction, multiplication, and division of 6-digit numbers.", answers: { "a": "Gottfried Leibniz", "b": "Blaise Pascal", "c": "Charles Babbage", "d": "Thomas Jefferson" }, correct: "c" },
+    { chapter: 1, question: "8. In its antitrust suit with the government, Microsoft claimed which of the following programs was an integral part of the operating system?", answers: { "a": "Mosaic", "b": "Internet Explorer", "c": "Navigator", "d": "MS-Word" }, correct: "b" },
+    { chapter: 1, question: "9. Both the Jacquard loom and the player piano had a '____'.", answers: { "a": "stored program", "b": "monitor", "c": "disk drive", "d": "keyboard" }, correct: "a" },
+    { chapter: 1, question: "10. Which of the following war-time activities caused the U.S. Navy Board of Ordinance to sponsor the development of the first modern electronic computer?", answers: { "a": "ship building", "b": "aerial reconnaissance", "c": "weapons development", "d": "map-making" }, correct: "c" },
+    { chapter: 1, question: "11. The integration of Internet Explorer with the dominant Windows operating system was the turning point in what came to be known as the '____'.", answers: { "a": "Internet affair", "b": "browser wars", "c": "code conflict", "d": "network nightmare" }, correct: "b" },
+    { chapter: 1, question: "12. In Western society, you can probably credit the 1622 invention of the ____ as the beginning of the solution of complex mathematical problems by mechanical devices with moving parts.", answers: { "a": "abacus", "b": "slide rule", "c": "logarithm", "d": "transit" }, correct: "b" },
+    { chapter: 1, question: "13. Which of the following operating systems was developed jointly by IBM and Microsoft?", answers: { "a": "NOS", "b": "OS/2", "c": "Linux", "d": "Unix" }, correct: "b" },
+    { chapter: 1, question: "14. Which of the following was the first commercially viable computer?", answers: { "a": "UNIVAC", "b": "ENIAC", "c": "Mark I", "d": "EDVAC" }, correct: "a" },
+    { chapter: 1, question: "15. In the fifth generation of electronic computing, modular approaches to coding, such as ____, facilitate larger, more complex, and more quickly and reliably delivered software products.", answers: { "a": "assembly programming", "b": "machine programming", "c": "object-oriented programming", "d": "binary programming" }, correct: "c" },
+    { chapter: 1, question: "16. Herman Hollerith introduced electromechanical counting equipment using ____ as input.", answers: { "a": "voice patterns", "b": "punch cards", "c": "magnetic tape", "d": "keyboard entry" }, correct: "b" },
+    { chapter: 1, question: "17. ____ involves dividing messages into blocks that can be reassembled at their destination, with each block possibly following a different path.", answers: { "a": "Multiplexing", "b": "Linking", "c": "Packet switching", "d": "Decoding" }, correct: "c" },
+    { chapter: 1, question: "18. The concept of computer design that allows for future modifications and additions by members of the public is known as which of the following?", answers: { "a": "closed architecture", "b": "proprietary architecture", "c": "open architecture", "d": "licensed architecture" }, correct: "c" },
+    { chapter: 1, question: "19. Fiberoptics and wireless technologies have given rise to which of the following terms?", answers: { "a": "WAN", "b": "Internet", "c": "WLAN", "d": "LAN" }, correct: "c" },
+    { chapter: 1, question: "20. In 1977, Apple released the ____ based upon the Motorola 6502 processor.", answers: { "a": "Apple I", "b": "Apple II", "c": "Macintosh", "d": "iPod" }, correct: "b" },
+    { chapter: 1, question: "21. The Macintosh had the first mass-produced ____, an interface that uses graphical instead of text commands.", answers: { "a": "ARPA", "b": "SMP", "c": "GUI", "d": "MPP" }, correct: "c" },
+    { chapter: 1, question: "22. IBM's first multipurpose machine was called which of the following?", answers: { "a": "UNIVAC", "b": "EDVAC", "c": "Mark I", "d": "ENIAC" }, correct: "c" },
+    { chapter: 1, question: "23. Assembly language, while easier to use than machine code, has what type of correspondence with machine code?", answers: { "a": "many-to-one", "b": "many-to-many", "c": "one-to-one", "d": "one-to-many" }, correct: "c" },
+    { chapter: 1, question: "24. The term ____ computing or ____ architectures refers to linking a number of CPUs to work on a task simultaneously.", answers: { "a": "parallel", "b": "sequential", "c": "serial", "d": "monolithic" }, correct: "a" },
+    { chapter: 1, question: "25. A(n) ____ network consists of computers that independently decide how to channel to the next computer.", answers: { "a": "concentrated", "b": "distributed", "c": "monolithic", "d": "centralized" }, correct: "b" },
+    { chapter: 2, question: "1. Which of the following tools specializes in sophisticated page layout?", answers: { "a": "project scheduler", "b": "desktop publisher", "c": "text editor", "d": "spreadsheet" }, correct: "b" },
+    { chapter: 2, question: "2. When you are diagramming and creating flowcharts, you are principally engaged in ____ tasks.", answers: { "a": "programming", "b": "office", "c": "Web", "d": "network repair" }, correct: "a" },
+    { chapter: 2, question: "3. In addition to redundant areas, ____ compression techniques eliminate information not perceptible to the human eye.", answers: { "a": "lossless", "b": "primary", "c": "lossy", "d": "secondary" }, correct: "c" },
+    { chapter: 2, question: "4. The 16.7 million color palette of the BMP format requires ____ bits.", answers: { "a": "16", "b": "20", "c": "24", "d": "32" }, correct: "c" },
+    { chapter: 2, question: "5. Data ____ can be used to reduce the size of a file and speed the transmission of the file through e-mail.", answers: { "a": "collaboration", "b": "design", "c": "inlining", "d": "compression" }, correct: "d" },
+    { chapter: 2, question: "6. ____ in the form of logos, cartoons, and maps play a large part in the world of information sharing.", answers: { "a": "Texts", "b": "Graphics", "c": "Databases", "d": "Protocols" }, correct: "b" },
+    { chapter: 2, question: "7. Text editors, compilers, and debuggers are directly featured on the menu of which of the following software tools?", answers: { "a": "Integrated Development Environment", "b": "word processor", "c": "spreadsheet", "d": "desktop publisher" }, correct: "a" },
+    { chapter: 2, question: "8. File ____ Protocol (or FTP) is a transmission method used to send files across the Internet.", answers: { "a": "Task", "b": "Test", "c": "Transfer", "d": "Table" }, correct: "c" },
+    { chapter: 2, question: "9. The ____ extension is one of the more popular compression formats in the world of Windows.", answers: { "a": ".bat", "b": ".car", "c": ".zip", "d": ".exe" }, correct: "c" },
+    { chapter: 2, question: "10. A ____ tool is the most logical choice for the development of a slide show.", answers: { "a": "spreadsheet", "b": "presentation", "c": "word processing", "d": "scheduling" }, correct: "b" },
+    { chapter: 2, question: "11. A grid-like document that facilitates arithmetic manipulation and presentation is called a ____.", answers: { "a": "resume", "b": "fax", "c": "memo", "d": "spreadsheet" }, correct: "d" },
+    { chapter: 2, question: "12. UML or Universal ____ Language diagrams are used to develop object-oriented systems and programs.", answers: { "a": "Modeling", "b": "Markup", "c": "Master", "d": "Middling" }, correct: "a" },
+    { chapter: 2, question: "13. A ____ is a generic tool that allows you to do basic editing, although the finished document won't have a professional look.", answers: { "a": "word processor", "b": "text editor", "c": "GUI", "d": "spreadsheet" }, correct: "b" },
+    { chapter: 2, question: "14. ____ is a graphics tool popular with Web designers.", answers: { "a": "Tron", "b": "Macromedia Fireworks", "c": "Redux", "d": "Starry Messenger" }, correct: "b" },
+    { chapter: 2, question: "15. Creating documents, presentations, and spreadsheets are best classified as ____ tasks.", answers: { "a": "programming", "b": "Internet", "c": "scientific", "d": "office" }, correct: "d" },
+    { chapter: 2, question: "16. The process of changing image format from one type to another is called ____.", answers: { "a": "conversion", "b": "rotating", "c": "blurring", "d": "cropping" }, correct: "a" },
+    { chapter: 2, question: "17. Images reduced by ____ compression techniques retain their original quality.", answers: { "a": "lackless", "b": "lossless", "c": "sassy", "d": "glossy" }, correct: "b" },
+    { chapter: 2, question: "18. A ____ is a collection of information usually organized into tables.", answers: { "a": "browser", "b": "multiplex", "c": "database", "d": "publisher" }, correct: "c" },
+    { chapter: 2, question: "19. Grammar check and font selection are common features of which of the following tools?", answers: { "a": "browser", "b": "text editor", "c": "binder", "d": "word processor" }, correct: "d" },
+    { chapter: 2, question: "20. Which of the following programming environments is actually a platform hosting a number of distinct languages?", answers: { "a": "Borland JBuilder", "b": "Microsoft.NET", "c": "CodeConqueror", "d": "Rhodes" }, correct: "b" },
+    { chapter: 2, question: "21. Graphics software available in the form of ____ is generally free of charge during a trial period.", answers: { "a": "adware", "b": "middleware", "c": "shareware", "d": "malware" }, correct: "c" },
+    { chapter: 2, question: "22. Which of the following graphical formats should be favored for animation and small file size?", answers: { "a": "BMP", "b": "GIF", "c": "JPG", "d": "TIF" }, correct: "b" },
+    { chapter: 3, question: "1. By switching on and off, the ____ can be used to represent the 1s and 0s that are the foundation of all that goes on in the computer.", answers: { "a": "capacitor", "b": "transistor", "c": "resistor", "d": "inductor" }, correct: "b" },
+    { chapter: 3, question: "2. ____ algebra is concerned with the logic of the operators AND, OR, and NOT.", answers: { "a": "Linear", "b": "Modern", "c": "Boolean", "d": "Fibonacci" }, correct: "c" },
+    { chapter: 3, question: "3. The ____ operator works with a single input and its purpose is to reverse the input.", answers: { "a": "XOR", "b": "NOT", "c": "AND", "d": "OR" }, correct: "b" },
+    { chapter: 3, question: "4. The AND circuit generates ____ output for each set of inputs.", answers: { "a": "one", "b": "two", "c": "three", "d": "four" }, correct: "a" },
+    { chapter: 3, question: "5. The truth table for the NOT gate shows that the output is the ____ of the input.", answers: { "a": "square", "b": "first derivative", "c": "opposite", "d": "same" }, correct: "c" },
+    { chapter: 3, question: "6. The truth table for the ____ gate indicates that the output is 1 only when the inputs are different.", answers: { "a": "OR", "b": "XOR", "c": "AND", "d": "NAND" }, correct: "b" },
+    { chapter: 3, question: "7. A gate's output for any set of inputs follows the specifications given in the ____ table.", answers: { "a": "variable", "b": "data", "c": "log", "d": "truth" }, correct: "d" },
+    { chapter: 3, question: "8. One of the main functions of the ____ component of the computer's CPU is to add numbers.", answers: { "a": "controller", "b": "ALU", "c": "memory", "d": "register" }, correct: "b" },
+    { chapter: 3, question: "9. Which piece of technology replaced the vacuum tube?", answers: { "a": "transistor", "b": "diode", "c": "capacitor", "d": "resistor" }, correct: "a" },
+    { chapter: 3, question: "10. Very Large-Scale Integration (VLSI) chips hold ____ of circuits.", answers: { "a": "hundreds", "b": "thousands", "c": "millions", "d": "trillions" }, correct: "c" },
+    { chapter: 3, question: "11. Most computers today are still based on what has come to be called ____ architecture, and are sometimes still called ____ machines.", answers: { "a": "Hilbert", "b": "Turing", "c": "Von Neumann", "d": "Non Von" }, correct: "c" },
+    { chapter: 3, question: "12. At a basic level, most computers operate on what is called a(n) '____' cycle.", answers: { "a": "encrypt-encapsulate", "b": "edit-add", "c": "store-revise", "d": "fetch-execute" }, correct: "d" },
+    { chapter: 3, question: "13. RAM is called '____' because it does not have to be read sequentially.", answers: { "a": "relative", "b": "random", "c": "remedial", "d": "rapid" }, correct: "b" },
+    { chapter: 3, question: "14. Which of the following storage forms is non-volatile?", answers: { "a": "DRAM", "b": "SRAM", "c": "DDRAM", "d": "CD-ROM" }, correct: "d" },
+    { chapter: 3, question: "15. Hard disks are made up of one or more metal platters with a coating consisting of ____ particles.", answers: { "a": "magnetic", "b": "atomic", "c": "photonic", "d": "silicon" }, correct: "a" },
+    { chapter: 3, question: "16. Keyboards, and most other I/O devices, connect to the motherboard through a(n) ____.", answers: { "a": "socket", "b": "adapter", "c": "channel", "d": "port" }, correct: "d" },
+    { chapter: 3, question: "17. The process of painting an image on the screen of a monitor is called ____ scanning.", answers: { "a": "raster", "b": "roster", "c": "cathode", "d": "dpi" }, correct: "a" },
+    { chapter: 3, question: "18. Printers are rated by both printing speed and ____ of output.", answers: { "a": "definition", "b": "variety", "c": "size", "d": "resolution" }, correct: "d" },
+    { chapter: 3, question: "19. When an I/O device places a voltage signal on a(n) ____ line, the associated chip checks its priority before passing it on to the CPU.", answers: { "a": "poll", "b": "job", "c": "interrupt", "d": "JCL" }, correct: "c" },
+    { chapter: 4, question: "1. Displays containing the contents of a computer's memory or the hard disk are often referred to as ____ memory dumps.", answers: { "a": "error", "b": "hexadecimal", "c": "decimal", "d": "octal" }, correct: "b" },
+    { chapter: 4, question: "2. The number 10-4 (ten to the power of -4) evaluates to which of the following?", answers: { "a": "0.000001", "b": "0.00001", "c": "0.0001", "d": "10000" }, correct: "c" },
+    { chapter: 4, question: "3. A ____ is identified by the number of digits a numbering system has, including zero.", answers: { "a": "root", "b": "discriminant", "c": "determinant", "d": "base" }, correct: "d" },
+    { chapter: 4, question: "4. The concept of ____ value is common to all modern numbering systems.", answers: { "a": "positional", "b": "radical", "c": "deterministic", "d": "random" }, correct: "a" },
+    { chapter: 4, question: "5. According to positional value, the binary number 10101 represents ____ things.", answers: { "a": "3", "b": "5", "c": "12", "d": "21" }, correct: "d" },
+    { chapter: 4, question: "6. The hexadecimal numbering system runs out of digits after ____.", answers: { "a": "E", "b": "F", "c": "G", "d": "H" }, correct: "b" },
+    { chapter: 4, question: "7. The decimal equivalent of 100(16) is ____.", answers: { "a": "116", "b": "160", "c": "256", "d": "1600" }, correct: "c" },
+    { chapter: 4, question: "8. What is the result of converting the decimal number 25 to a base 16 equivalent?", answers: { "a": "F", "b": "19", "c": "1A", "d": "31" }, correct: "b" },
+    { chapter: 4, question: "9. What is the result of converting the decimal number 25 to a base 2 equivalent?", answers: { "a": "10001", "b": "10011", "c": "11001", "d": "11101" }, correct: "c" },
+    { chapter: 4, question: "10. What binary number results from adding 111 and 111 (base 2)?", answers: { "a": "1000", "b": "1011", "c": "1110", "d": "1111" }, correct: "c" },
+    { chapter: 4, question: "11. A ____ is a basic unit of storage that can have a value of either 1 or 0 (on or off).", answers: { "a": "nibble", "b": "word", "c": "byte", "d": "bit" }, correct: "d" },
+    { chapter: 4, question: "12. A ____ is a group of eight bits.", answers: { "a": "byte", "b": "word", "c": "nibble", "d": "blip" }, correct: "a" },
+    { chapter: 4, question: "13. An 8-nibble word is more likely to be referred to as the equivalent ____-byte word.", answers: { "a": "2", "b": "4", "c": "8", "d": "16" }, correct: "b" },
+    { chapter: 4, question: "14. Each hexadecimal digit relates directly to a ____-bit binary pattern.", answers: { "a": "2", "b": "4", "c": "8", "d": "16" }, correct: "b" },
+    { chapter: 4, question: "15. Which of the following methods represents the most common way of storing signed numbers?", answers: { "a": "one's complement", "b": "binary complement", "c": "integer complement", "d": "two's complement" }, correct: "d" },
+    { chapter: 4, question: "16. To find the ____ of a given bit, flip it to the opposite state.", answers: { "a": "root", "b": "complement", "c": "position", "d": "sign" }, correct: "d" },
+    { chapter: 4, question: "17. In scientific notation, the method of displaying numbers uses a(n) ____ and an exponent.", answers: { "a": "mantissa", "b": "asymptote", "c": "abscissa", "d": "ordinate" }, correct: "a" },
+    { chapter: 4, question: "18. The eight bit extended ASCII character set can be used to represent ____ characters.", answers: { "a": "128", "b": "256", "c": "512", "d": "34,168" }, correct: "b" },
+    { chapter: 4, question: "19. A ____ is the smallest unit that can be displayed on a computer monitor.", answers: { "a": "micron", "b": "picon", "c": "twip", "d": "pixel" }, correct: "d" },
+    { chapter: 4, question: "20. ____ patterns contain information about the color and brightness of a pixel.", answers: { "a": "Binary", "b": "Octal", "c": "Decimal", "d": "Hexadecimal" }, correct: "a" },
+    { chapter: 4, question: "21. Unicode character representation uses a(n) ____ bit standard.", answers: { "a": "4", "b": "7", "c": "8", "d": "16" }, correct: "d" },
+    { chapter: 4, question: "22. Various ____ techniques have been designed to allow the same image information to be stored in a smaller file.", answers: { "a": "consolidation", "b": "compression", "c": "scanning", "d": "resolution" }, correct: "b" },
+    { chapter: 4, question: "23. A sound consists of a waveform that has amplitude (volume) and a ____ (pitch).", answers: { "a": "frequency", "b": "phase shift", "c": "phase angle", "d": "period" }, correct: "a" },
+    { chapter: 4, question: "24. The computer samples sound at fixed intervals and each sample is assigned a binary value according to its ____.", answers: { "a": "frequency", "b": "period", "c": "amplitude", "d": "pitch" }, correct: "c" },
+    { chapter: 4, question: "25. Which of the following is an example of a video compression format?", answers: { "a": "BMP", "b": "GIF", "c": "MPEG", "d": "TIF" }, correct: "c" },
+    { chapter: 5, question: "1. Interface programs that allow a computer to interact with peripheral devices are called ____.", answers: { "a": "shell scripts", "b": "applets", "c": "drivers", "d": "monitors" }, correct: "c" },
+    { chapter: 5, question: "2. The ____ is the core of the OS.", answers: { "a": "file manager", "b": "scheduler", "c": "GUI", "d": "kernel" }, correct: "d" },
+    { chapter: 5, question: "3. The operating system running on a computer is often called its ____ and is typically tied to a particular CPU.", answers: { "a": "support", "b": "platform", "c": "intermediary", "d": "driver" }, correct: "b" },
+    { chapter: 5, question: "4. Which of the following terms refers to computing with more than one CPU?", answers: { "a": "multitasking", "b": "multilayering", "c": "multileveraging", "d": "multiprocessing" }, correct: "d" },
+    { chapter: 5, question: "5. Which of the following operating systems supports multitasking?", answers: { "a": "Windows XP", "b": "CP/M", "c": "MS-DOS", "d": "Apple II" }, correct: "a" },
+    { chapter: 5, question: "6. Which of the following is a primary function of an operating system?", answers: { "a": "managing resources", "b": "generating documents", "c": "generating flowcharts", "d": "solving differential equations" }, correct: "a" },
+    { chapter: 5, question: "7. Console operating systems prompt users to interact through a(n) ____ line.", answers: { "a": "operational", "b": "flow", "c": "programming", "d": "command" }, correct: "d" },
+    { chapter: 5, question: "8. A program that is currently executing is called a ____.", answers: { "a": "code segment", "b": "process", "c": "JCL", "d": "regular routine" }, correct: "b" },
+    { chapter: 5, question: "9. Which of the following operating systems was designed to accommodate multiple users and multiple tasks?", answers: { "a": "DOS", "b": "CP/M", "c": "UNIX", "d": "Windows 3.0" }, correct: "c" },
+    { chapter: 5, question: "10. Time-____ is a method that allows multiple processes to share the CPU.", answers: { "a": "switching", "b": "sourcing", "c": "solving", "d": "slicing" }, correct: "d" },
+    { chapter: 5, question: "11. The operating system reallocates the CPU through a program known as a(n) ____ handler.", answers: { "a": "interrupt", "b": "job", "c": "control", "d": "disruption" }, correct: "a" },
+    { chapter: 5, question: "12. A situation known as ____ occurs when all active processes are tied up in a circular wait for resources.", answers: { "a": "synchronization", "b": "context switch", "c": "safe mode", "d": "deadlock" }, correct: "d" },
+    { chapter: 5, question: "13. ____ are simply broad divisions of the total capacity of the disk into specific OS areas.", answers: { "a": "Segments", "b": "Portions", "c": "Categories", "d": "Partitions" }, correct: "d" },
+    { chapter: 5, question: "14. In Unix or Linux, entering ____ <command> gives you the manual on the command that you specify.", answers: { "a": "MAN", "b": "man", "c": "HELP", "d": "help" }, correct: "b" },
+    { chapter: 5, question: "15. In DOS, you can enter ____ <command> to get more details concerning a particular command.", answers: { "a": "HELP", "b": "AID", "c": "ASSIST", "d": "SUPPORT" }, correct: "a" },
+    { chapter: 5, question: "16. The process of ____ arranges the disk surface into addressable areas and sets up the basic directory tree structure on the disk.", answers: { "a": "organizing", "b": "formatting", "c": "templating", "d": "shaping" }, correct: "b" },
+    { chapter: 5, question: "17. The main directory level is also called the ____ level.", answers: { "a": "root", "b": "child", "c": "leaf", "d": "primary" }, correct: "a" },
+    { chapter: 5, question: "18. In Windows, deleted files and folders reside in the ____ Bin folder until it is emptied.", answers: { "a": "Remainder", "b": "Refuse", "c": "Recycle", "d": "Recovery" }, correct: "c" },
+    { chapter: 5, question: "19. ____ are characters that are used to match any character at the end of a file name to a particular file extension.", answers: { "a": "Deuces", "b": "Jokers", "c": "Aces", "d": "Wildcards" }, correct: "d" },
+    { chapter: 5, question: "20. Moving files is similar to ____ files.", answers: { "a": "deleting", "b": "closing", "c": "copying", "d": "opening" }, correct: "c" },
+    { chapter: 5, question: "21. Wildcard specifications are case sensitive in ____.", answers: { "a": "UNIX", "b": "DOS", "c": "Windows XP", "d": "MAC OS" }, correct: "a" },
+    { chapter: 5, question: "22. Which of the following commands enables UNIX to partition a disk drive?", answers: { "a": "FDISK", "b": "PDISK", "c": "pdisk", "d": "fdisk" }, correct: "d" },
+    { chapter: 6, question: "1. The Transport layer of the OSI model uses data units called ____.", answers: { "a": "words", "b": "datagrams", "c": "bitgrams", "d": "bytegrams" }, correct: "b" },
+    { chapter: 6, question: "2. ____ pulses allow transmission rates up to 4 Mbps.", answers: { "a": "Microwave", "b": "Infrared", "c": "X-ray", "d": "Ultraviolet" }, correct: "b" },
+    { chapter: 6, question: "3. The tendency of a signal to become weaker over distance is known as ____.", answers: { "a": "amplification", "b": "alienation", "c": "attenuation", "d": "amelioration" }, correct: "c" },
+    { chapter: 6, question: "4. The ____ layer of the OSI model is responsible for translation, formatting, and syntax selection.", answers: { "a": "Presentation", "b": "Session", "c": "Application", "d": "Data Link" }, correct: "a" },
+    { chapter: 6, question: "5. Fiber-optic cables use ____ fibers to guide light pulses along a cable.", answers: { "a": "ceramic", "b": "glass", "c": "plastic", "d": "tungsten" }, correct: "b" },
+    { chapter: 6, question: "6. Cable is theoretically capable of speeds up to ____.", answers: { "a": "4.2 Mbps", "b": "42 Mbps", "c": "420 Mbps", "d": "42 Gbps" }, correct: "b" },
+    { chapter: 6, question: "7. ____ direct network traffic based on the logical (IP) addresses assigned at the third layer of the OSI stack.", answers: { "a": "Bridges", "b": "Routers", "c": "Hubs", "d": "Gateways" }, correct: "b" },
+    { chapter: 6, question: "8. A ____ is a device designed to protect an internal network or node from intentional or unintentional damage from an external network.", answers: { "a": "gate", "b": "barricade", "c": "firewall", "d": "fence" }, correct: "c" },
+    { chapter: 6, question: "9. ____ media are physical media such as copper wire or fiber-optic cable.", answers: { "a": "Directed", "b": "Guided", "c": "Undirected", "d": "Oriented" }, correct: "b" },
+    { chapter: 6, question: "10. In a ____ topology, one of the computers or a network device serves as a hub for all messages.", answers: { "a": "grid", "b": "star", "c": "bus", "d": "ring" }, correct: "b" },
+    { chapter: 6, question: "11. A(n) ____ diagram shows the protocol interactions between two entities.", answers: { "a": "flow", "b": "assignment", "c": "timing", "d": "hierarchy" }, correct: "c" },
+    { chapter: 6, question: "12. Twisting copper wires nearly eliminates the electromagnetic effect known as ____.", answers: { "a": "inductance", "b": "resistance", "c": "resonance", "d": "impedance" }, correct: "a" },
+    { chapter: 6, question: "13. Which of the following WAN technologies use the same unguided media as television?", answers: { "a": "DSL", "b": "dial-up", "c": "cable", "d": "satellite" }, correct: "d" },
+    { chapter: 6, question: "14. A(n) ____ is a set of rules designed to facilitate communication.", answers: { "a": "procedure", "b": "accord", "c": "code", "d": "protocol" }, correct: "d" },
+    { chapter: 6, question: "15. The PCI system bus consists of ____ wires.", answers: { "a": "10", "b": "20", "c": "98", "d": "198" }, correct: "c" },
+    { chapter: 6, question: "16. Normal telephone voice-grade lines use what is called ____-division multiplexing to divide up the bandwidth among the subscribers.", answers: { "a": "phase", "b": "frequency", "c": "wave", "d": "amplitude" }, correct: "b" },
+    { chapter: 6, question: "17. ____ measures the speed a transmission medium is able to handle in bits per second.", answers: { "a": "Bandwidth", "b": "Byte capacity", "c": "Bit capacity", "d": "Broadwidth" }, correct: "a" },
+    { chapter: 6, question: "18. The OSI conceptual model for the communication process has ____ discrete layers.", answers: { "a": "four", "b": "five", "c": "seven", "d": "nine" }, correct: "c" },
+    { chapter: 6, question: "19. A ____ is a relatively small number of computers connected together in close proximity, usually within a building or complex.", answers: { "a": "LAN", "b": "WAN", "c": "DAN", "d": "MAN" }, correct: "a" },
+    { chapter: 6, question: "20. The normal copper wire is capable of carrying ____ voice channels.", answers: { "a": "4", "b": "16", "c": "24", "d": "48" }, correct: "c" },
+    { chapter: 7, question: "1. Your Internet provider maintains a switching center called a ____.", answers: { "a": "nexus", "b": "point-of-presence", "c": "cusp", "d": "receive-and-send" }, correct: "b" },
+    { chapter: 7, question: "2. The acronym HTTP stands for ____.", answers: { "a": "Heuristic Transport Type Protocol", "b": "Hexadecimal Task Test Protocol", "c": "Hypertext Transfer Protocol", "d": "Hypertext Transition Protocol" }, correct: "c" },
+    { chapter: 7, question: "3. The ____ protocol establishes a virtual circuit with the destination computer to transmit packets.", answers: { "a": "TCP", "b": "IP", "c": "HTTP", "d": "FTP" }, correct: "a" },
+    { chapter: 7, question: "4. Central to the operation of the IP protocol is the IP ____ of both the source and destination.", answers: { "a": "name", "b": "location", "c": "signifier", "d": "address" }, correct: "d" },
+    { chapter: 7, question: "5. The total pool of IPv4 addresses is separated into groups, called ____.", answers: { "a": "classes", "b": "entities", "c": "aggregations", "d": "clusters" }, correct: "a" },
+    { chapter: 7, question: "6. Subnets are defined through the use of a subnet ____.", answers: { "a": "filter", "b": "screen", "c": "sentinel", "d": "mask" }, correct: "d" },
+    { chapter: 7, question: "7. Using ____, a packet can just be sent on an alternate line if the desired line is damaged or busy.", answers: { "a": "hubs", "b": "routers", "c": "switches", "d": "linkers" }, correct: "b" },
+    { chapter: 7, question: "8. So that packets do not keep bouncing from router to router forever, one of the fields in the IP header is the ____ field.", answers: { "a": "time to live", "b": "time to expire", "c": "lifetim", "d": "expiration" }, correct: "a" },
+    { chapter: 7, question: "9. TCP and IP protocols map to Transport, Network, and ____ layers of the OSI model.", answers: { "a": "Presentation", "b": "Application", "c": "Data Link", "d": "Session" }, correct: "b" },
+    { chapter: 7, question: "10. The ____ protocol establishes a link from an e-mail client to a mail server.", answers: { "a": "SMTP", "b": "POP3", "c": "IMAP", "d": "HTTP" }, correct: "a" },
+    { chapter: 7, question: "11. The ____ protocol is used to provide the reliable and efficient transmission of data files.", answers: { "a": "UDP", "b": "TCP", "c": "FTP", "d": "IP" }, correct: "c" },
+    { chapter: 7, question: "12. Which of the following computer scientists invented the World Wide Web?", answers: { "a": "E.F. Codd", "b": "Tim Berners-Lee", "c": "Marc Andreesen", "d": "Donald Knuth" }, correct: "b" },
+    { chapter: 7, question: "13. The problem of having to remember IP addresses was solved by allowing Web servers to have ____ names.", answers: { "a": "range", "b": "locator", "c": "resource", "d": "domain" }, correct: "d" },
+    { chapter: 7, question: "14. When you type in a URL in the address bar of your browser, you send a ____ lookup request to the ____ server at your ISP.", answers: { "a": "POP", "b": "DNS", "c": "SND", "d": "NET" }, correct: "b" },
+    { chapter: 7, question: "15. The port number can be analogized to which of the following address components?", answers: { "a": "street address", "b": "city", "c": "zip code", "d": "apartment number" }, correct: "d" },
+    { chapter: 7, question: "16. With ____, multiple computers can share one Internet connection.", answers: { "a": "NAT", "b": "DHCP", "c": "TCP/IP", "d": "UDP" }, correct: "a" },
+    { chapter: 7, question: "17. You can check the network configuration of your computer in Windows by using the ____ command.", answers: { "a": "IPSETUP", "b": "IPCONFIG", "c": "NETWORK", "d": "NETDESIGN" }, correct: "b" },
+    { chapter: 7, question: "18. The ____ server is just a computer that is programmed to respond to HTTP requests.", answers: { "a": "Network", "b": "Protocol", "c": "Internet", "d": "Web" }, correct: "d" },
+    { chapter: 7, question: "19. HTML and the Web connect one page to another through ____.", answers: { "a": "overlinks", "b": "higherjoins", "c": "hyperlinks", "d": "cyberbridges" }, correct: "c" },
+    { chapter: 7, question: "20. ____ languages allow a Web page developer to include dynamic properties.", answers: { "a": "Scripting", "b": "Hosting", "c": "Presentation", "d": "Staging" }, correct: "a" },
+    { chapter: 7, question: "21. ____ formats content for display in a browser and transfers information via the Web.", answers: { "a": "SGML", "b": "XML", "c": "HTML", "d": "PHP" }, correct: "b" },
+    { chapter: 7, question: "22. Crawling makes use of a special program called a bot or ____.", answers: { "a": "bug", "b": "butterfly", "c": "spider", "d": "centipede" }, correct: "c" },
+    { chapter: 8, question: "1. Data that has been organized and logically related to allow access, retrieval, and use of that data is called a ____.", answers: { "a": "store", "b": "database", "c": "field", "d": "record" }, correct: "b" },
+    { chapter: 8, question: "2. A special language known as ____ is used to query or extract information from databases.", answers: { "a": "Selection Quotation Language", "b": "Sorting Questions Language", "c": "Structured Query Language", "d": "Software Questioning Language" }, correct: "c" },
+    { chapter: 8, question: "3. Which of the following computer scientists made significant contributions to relational database management?", answers: { "a": "Grace Hopper", "b": "E.F. Codd", "c": "Alan Turing", "d": "John Von Neumann" }, correct: "b" },
+    { chapter: 8, question: "4. A DBMS must provide or interface with a(n) ____ language to extract information from the database.", answers: { "a": "assembly", "b": "query", "c": "machine", "d": "natural" }, correct: "b" },
+    { chapter: 8, question: "5. A ____ or entity is divided into rows or columns much like a spreadsheet.", answers: { "a": "box", "b": "grid", "c": "chart", "d": "table" }, correct: "d" },
+    { chapter: 8, question: "6. The set of possible values for each column is called the ____ of that column.", answers: { "a": "domain", "b": "range", "c": "image", "d": "codomain" }, correct: "a" },
+    { chapter: 8, question: "7. A(n) ____ is a special type of file that occupies its own space and specifies one or more columns that determine how the information stored in a table is organized.", answers: { "a": "field", "b": "identifier", "c": "tab", "d": "index" }, correct: "d" },
+    { chapter: 8, question: "8. When the columns are used to determine the sort order of information they are called ____.", answers: { "a": "markers", "b": "keys", "c": "flags", "d": "tokens" }, correct: "b" },
+    { chapter: 8, question: "9. The set of rules that dictates how databases are designed is called ____.", answers: { "a": "normalization", "b": "standardization", "c": "customization", "d": "invocation" }, correct: "a" },
+    { chapter: 8, question: "10. To put the table into the ____ normal form, a separate row needs to be created for each row-column intersection with more than one value.", answers: { "a": "first", "b": "second", "c": "third", "d": "fourth" }, correct: "a" },
+    { chapter: 8, question: "11. A key that is made up of more than one column is called which of the following?", answers: { "a": "joined", "b": "union", "c": "aggregate", "d": "composite" }, correct: "d" },
+    { chapter: 8, question: "12. A(n) ____ dependency exists when one column is dependent upon another column that is not the primary key.", answers: { "a": "transitive", "b": "dysfunctional", "c": "relational", "d": "associative" }, correct: "a" },
+    { chapter: 8, question: "13. A(n) ____ defines how one entity works with or relates to another.", answers: { "a": "connection", "b": "arrangement", "c": "relationship", "d": "union" }, correct: "c" },
+    { chapter: 8, question: "14. A(n) ____ key is defined as a column in one table that is part of the primary key in another.", answers: { "a": "composite", "b": "secondary", "c": "auxiliary", "d": "foreign" }, correct: "d" },
+    { chapter: 8, question: "15. ____ shows the numeric occurrences between entities in an ER model.", answers: { "a": "Functionality", "b": "Cardinality", "c": "Transitivity", "d": "Dependency" }, correct: "b" },
+    { chapter: 8, question: "16. Which of following is a valid SQL command for constructing a table?", answers: { "a": "BUILD TABLE", "b": "SETUP TABLE", "c": "MAKE TABLE", "d": "CREATE TABLE" }, correct: "d" },
+    { chapter: 8, question: "17. Which of the following SQL key words indicates that data is not required for a specified column?", answers: { "a": "NULL", "b": "NOTHING", "c": "NOT", "d": "VOID" }, correct: "a" },
+    { chapter: 8, question: "18. SQL statements are closed with a(n) ____.", answers: { "a": "colon", "b": "semicolon", "c": "period", "d": "exclamation mark" }, correct: "b" },
+    { chapter: 8, question: "19. Which of the following commands can be used to add new rows of data to a table?", answers: { "a": "INCREASE", "b": "ADD", "c": "INSERT", "d": "INCLUDE" }, correct: "c" },
+    { chapter: 8, question: "20. Which of the following SQL statements is most commonly used?", answers: { "a": "INSERT", "b": "CREATE", "c": "DELETE", "d": "SELECT" }, correct: "d" },
+    { chapter: 8, question: "21. Which of the following is a valid SQL word used to return data in descending order?", answers: { "a": "BOTTOM", "b": "OPP", "c": "DESC", "d": "REV" }, correct: "c" },
+    { chapter: 9, question: "1. Which of the following can be classified as a data structure?", answers: { "a": "integer", "b": "array", "c": "character", "d": "float" }, correct: "b" },
+    { chapter: 9, question: "2. In the context of the Java programming language, the '____' keyword tells the computer that a new array is being created.", answers: { "a": "invoke", "b": "allocate", "c": "new", "d": "make" }, correct: "c" },
+    { chapter: 9, question: "3. What type of data can be stored in an array generated by the statement, 'int[] aGrades = new int[5]'?", answers: { "a": "strings", "b": "doubles", "c": "floats", "d": "integers" }, correct: "d" },
+    { chapter: 9, question: "4. With arrays, the ____ is used to specify the distance between memory locations.", answers: { "a": "offset", "b": "width", "c": "length", "d": "address" }, correct: "a" },
+    { chapter: 9, question: "5. The index or ____ tells the computer which memory cell to access in the array.", answers: { "a": "superscript", "b": "subscript", "c": "pointer", "d": "arrow" }, correct: "b" },
+    { chapter: 9, question: "6. Which of the following data structures adapts least efficiently to dynamic memory allocation.", answers: { "a": "linked lists", "b": "queues", "c": "stacks", "d": "arrays" }, correct: "d" },
+    { chapter: 9, question: "7. A(n) ____ is a memory cell that contains the address of another memory cell as its data.", answers: { "a": "index", "b": "token", "c": "pointer", "d": "element" }, correct: "c" },
+    { chapter: 9, question: "8. Backtracking is most efficiently accomplished by using a(n) ____.", answers: { "a": "stack", "b": "queue", "c": "tree", "d": "array" }, correct: "a" },
+    { chapter: 9, question: "9. A stack ____ keeps track of the top of a stack.", answers: { "a": "sentinel", "b": "flag", "c": "marker", "d": "pointer" }, correct: "d" },
+    { chapter: 9, question: "10. Which of the following operations removes an item from a stack?", answers: { "a": "pop", "b": "remove", "c": "delete", "d": "eject" }, correct: "a" },
+    { chapter: 9, question: "11. In order to remove an item from a queue, you would use a ____ operation.", answers: { "a": "enqueue", "b": "dequeue", "c": "requeue", "d": "delete" }, correct: "b" },
+    { chapter: 9, question: "12. Which of the following data structures uses a tail pointer?", answers: { "a": "stack", "b": "queue", "c": "array", "d": "binary tree" }, correct: "b" },
+    { chapter: 9, question: "13. A ____ represents a hierarchical structure similar to that of organizational or genealogy charts.", answers: { "a": "grid", "b": "network", "c": "digraph", "d": "tree" }, correct: "d" },
+    { chapter: 9, question: "14. The node that begins the tree is called the ____.", answers: { "a": "branch", "b": "child", "c": "root", "d": "leaf" }, correct: "c" },
+    { chapter: 9, question: "15. A binary search tree contains ____ components.", answers: { "a": "two", "b": "three", "c": "four", "d": "eight" }, correct: "b" },
+    { chapter: 9, question: "16. In order to sort data you first need to create a(n) ____ that defines the process for sorting.", answers: { "a": "list", "b": "queue", "c": "stack", "d": "algorithm" }, correct: "d" },
+    { chapter: 9, question: "17. The ____ sort starts at the first value in the list and then processes each element looking for the smallest value.", answers: { "a": "merge", "b": "counting", "c": "selection", "d": "radix" }, correct: "c" },
+    { chapter: 9, question: "18. The ____ sort starts with the last element in the list and compares its value to that of the item just above it in the list order.", answers: { "a": "bubble", "b": "insertion", "c": "heap", "d": "quick" }, correct: "a" },
+    { chapter: 9, question: "19. The process of a routine calling itself is called ____.", answers: { "a": "counting", "b": "recursion", "c": "iteration", "d": "modularization" }, correct: "b" },
+    { chapter: 9, question: "20. Which of the following sorting routines incorporates a problem solving technique known as divide and conquer?", answers: { "a": "counting", "b": "radix", "c": "bucket", "d": "quicksort" }, correct: "d" },
+    { chapter: 9, question: "21. Which of the following routines implements two list structures to perform sorting operations?", answers: { "a": "merge sort", "b": "selection sort", "c": "bubble", "d": "quicksort" }, correct: "a" },
+    { chapter: 10, question: "1. A(n) ____ is the part of the operating system responsible for creating, manipulating, renaming, copying, and removing files to and from storage devices.", answers: { "a": "cluster", "b": "file system", "c": "overflow area", "d": "hash key" }, correct: "b" },
+    { chapter: 10, question: "2. Which of the following terms describes an organizational unit within a storage medium that stores files, folders, and subdirectories?", answers: { "a": "Directory", "b": "Fragmentation", "c": "File compression", "d": "Volume" }, correct: "a" },
+    { chapter: 10, question: "3. ____ implies that data is directly read or written anywhere on the disk.", answers: { "a": "Sequential access", "b": "Hashing", "c": "Random access", "d": "Collision" }, correct: "c" },
+    { chapter: 10, question: "4. The term ____ implies reading and writing data in order, from the beginning.", answers: { "a": "random access", "b": "hashing", "c": "collision", "d": "sequential access" }, correct: "d" },
+    { chapter: 10, question: "5. A(n) ____ contains a group of the smallest units that can be accessed on a disk.", answers: { "a": "cluster", "b": "file system", "c": "NTFS", "d": "FAT" }, correct: "a" },
+    { chapter: 10, question: "6. A(n) ____ is a drive or partition on a drive that is formatted with a file system.", answers: { "a": "hash algorithm", "b": "CPU", "c": "hash key", "d": "volume" }, correct: "d" },
+    { chapter: 10, question: "7. ____ occurs when files have clusters scattered in different locations on the storage medium rather than in contiguous locations.", answers: { "a": "Clusterization", "b": "Disk fragmentation", "c": "Hashing", "d": "Disk striping" }, correct: "b" },
+    { chapter: 10, question: "8. The ____ improves performance by minimizing movement of the read/write heads.", answers: { "a": "file system", "b": "disk defragmenter", "c": "hash key", "d": "directory" }, correct: "b" },
+    { chapter: 10, question: "9. The ____ is used in NTFS to store data about every file and directory on the volume.", answers: { "a": "directory", "b": "master file table", "c": "cluster", "d": "overflow area" }, correct: "b" },
+    { chapter: 10, question: "10. A(n) ____ is a storage location that contains data that is treated as either binary or text.", answers: { "a": "cluster", "b": "overflow area", "c": "file", "d": "hash key" }, correct: "c" },
+    { chapter: 10, question: "11. ____ are more compact and faster to access because the system does not have to convert the data.", answers: { "a": "Binary files", "b": "Sequential files", "c": "Hash files", "d": "Random files" }, correct: "a" },
+    { chapter: 10, question: "12. ____ file access allows you to mimic the look of a database table by storing information in the file row by row, similar to a database record.", answers: { "a": "Hash", "b": "Binary", "c": "Sequential", "d": "Random" }, correct: "c" },
+    { chapter: 10, question: "13. ____ is a common method used for accessing data either in a file or a database table through the use of a unique value.", answers: { "a": "Clustering", "b": "Disk fragmenting", "c": "Hashing", "d": "File compression" }, correct: "c" },
+    { chapter: 10, question: "14. A(n) ____ is a unique value used in hashing algorithms.", answers: { "a": "hash key", "b": "cluster", "c": "directory", "d": "overflow area" }, correct: "a" },
+    { chapter: 10, question: "15. ____ occur when the hashing algorithm generates the same relative key for more than one original key value.", answers: { "a": "Clusters", "b": "Directories", "c": "Compressions", "d": "Collisions" }, correct: "d" },
+    { chapter: 10, question: "16. An area in a file that is used in case a collision occurs during the hashing algorithm is called a(n) ____.", answers: { "a": "cluster", "b": "overflow area", "c": "reserved area", "d": "random area" }, correct: "b" },
+    { chapter: 10, question: "17. The ____ keeps track of which files are using which clusters.", answers: { "a": "file allocation table", "b": "directory", "c": "hash key", "d": "random area" }, correct: "a" },
+    { chapter: 10, question: "18. ____ provides the ability to assign access rights to files and directories.", answers: { "a": "FAT12", "b": "FAT24", "c": "NTFS", "d": "FAT32" }, correct: "c" },
+    { chapter: 10, question: "19. ____ is often referred to as a 'journaling' file system because it keeps track of transactions performed when working with files and directories.", answers: { "a": "FAT", "b": "NTFS", "c": "MFT", "d": "EFS" }, correct: "b" },
+    { chapter: 10, question: "20. Clusters are also called ____.", answers: { "a": "directories", "b": "allocation units", "c": "algorithms", "d": "overflow areas" }, correct: "b" },
+    { chapter: 11, question: "1. A(n) ____ is a collection of statements or steps that solve a problem and need to be converted into a language that the computer understands in order to perform one or more tasks.", answers: { "a": "algorithm", "b": "identifier", "c": "program", "d": "parameter" }, correct: "c" },
+    { chapter: 11, question: "2. A(n) ____ is a logically ordered set of statements used to solve a problem.", answers: { "a": "identifier", "b": "algorithm", "c": "variable", "d": "parameter" }, correct: "b" },
+    { chapter: 11, question: "3. A(n) ____ is a program included with an executable application that acts as the translator between the program and the computer by converting program statements one by one into a language the computer understands.", answers: { "a": "IDE", "b": "interpreter", "c": "constructor", "d": "endless loop" }, correct: "b" },
+    { chapter: 11, question: "4. A(n) ____ is a program that reads all statements from a program and converts them into a computer language.", answers: { "a": "event", "b": "object", "c": "compiler", "d": "control structure" }, correct: "c" },
+    { chapter: 11, question: "5. A(n) ____ is a programming language that resembles more what a computer can understand rather than a human.", answers: { "a": "low-level language", "b": "high-level language", "c": "event handler", "d": "postcondition loop" }, correct: "a" },
+    { chapter: 11, question: "6. The ____ is the lowest-level language that is directly understood by a computer.", answers: { "a": "object oriented language", "b": "constructor", "c": "assembly language", "d": "machine language" }, correct: "d" },
+    { chapter: 11, question: "7. A(n) ____ resides between the lowest-level language and a higher-level language; it assigns letter codes to each machine language instruction.", answers: { "a": "machine language", "b": "constructor", "c": "class", "d": "assembly language" }, correct: "d" },
+    { chapter: 11, question: "8. A(n) ____ reads assembly language code and converts it into machine language.", answers: { "a": "control structure", "b": "assembler", "c": "event handler", "d": "identifier" }, correct: "b" },
+    { chapter: 11, question: "9. A(n) ____ is a programming language that is more human-friendly or more natural for humans to read.", answers: { "a": "assembly language", "b": "machine language", "c": "high-level language", "d": "interpreter" }, correct: "c" },
+    { chapter: 11, question: "10. The term ____ refers to the spelling and grammar used within a programming language.", answers: { "a": "interpreter", "b": "syntax", "c": "declaration", "d": "event" }, correct: "b" },
+    { chapter: 11, question: "11. Which of the following terms describes a software development interface that incorporates all of the necessary tools needed to write, compile, and distribute programs?", answers: { "a": "Integrated development environment", "b": "Object oriented programming", "c": "Variable initialization", "d": "Hungarian notation" }, correct: "a" },
+    { chapter: 11, question: "12. A(n) ____ is a statement that associates an identifier with a variable.", answers: { "a": "attribute", "b": "endless loop", "c": "variable", "d": "declaration" }, correct: "d" },
+    { chapter: 11, question: "13. The storage requirement for the int data type in Java is ____.", answers: { "a": "2 bytes", "b": "4 bytes", "c": "6 bytes", "d": "8 bytes" }, correct: "b" },
+    { chapter: 11, question: "14. The process of combining or joining strings into one value is known as ____.", answers: { "a": "concatenation", "b": "instantiation", "c": "nesting", "d": "inheritance" }, correct: "a" },
+    { chapter: 11, question: "15. Assigning a value to a variable at declaration is called ____.", answers: { "a": "startup", "b": "variable initialization", "c": "concatenation", "d": "shortcut notation" }, correct: "b" },
+    { chapter: 11, question: "16. ____ is a style of programming that involves representing items, things, and people as objects rather than basing the logic around actions.", answers: { "a": "Object-oriented programming", "b": "Assembly programming", "c": "Variable initialization", "d": "Polymorphism" }, correct: "a" },
+    { chapter: 11, question: "17. A(n) ____ is a template or mold used for defining new object types along with their properties and behavior.", answers: { "a": "compiler", "b": "event", "c": "method", "d": "class" }, correct: "d" },
+    { chapter: 11, question: "18. A(n) ____ is a self-contained entity that consists of both data and procedures.", answers: { "a": "constructor", "b": "method", "c": "object", "d": "parameter" }, correct: "c" },
+    { chapter: 11, question: "19. ____ is the process of creating an object based upon a class.", answers: { "a": "Inheritance", "b": "Concatenation", "c": "Instantiation", "d": "Variable initialization" }, correct: "c" },
+    { chapter: 11, question: "20. A(n) ____ is a special class function/method used for creating or instantiating an object.", answers: { "a": "event handler", "b": "constructor", "c": "expression", "d": "function" }, correct: "b" },
+    { chapter: 11, question: "21. A(n) ____ is an action or occurrence that is recognized by a class.", answers: { "a": "identifier", "b": "event", "c": "variable", "d": "scope" }, correct: "b" },
+    { chapter: 11, question: "22. ____ is the process of providing more class functionality by creating more specific classes based on generic classes.", answers: { "a": "Variable initialization", "b": "Encapsulation", "c": "Inheritance", "d": "Polymorphism" }, correct: "c" },
+    { chapter: 12, question: "1. ____ is the process of producing software applications.", answers: { "a": "Database administration", "b": "Software engineering", "c": "UML", "d": "SDLC" }, correct: "b" },
+    { chapter: 12, question: "2. The ____ describes the life of the application, including all of the stages involved in the development, testing, installation, and maintenance of a program.", answers: { "a": "SDLC", "b": "UML", "c": "SLC", "d": "DBA" }, correct: "a" },
+    { chapter: 12, question: "3. ____ determines whether the project is worth doing, and specifying the advantages and disadvantages of this application.", answers: { "a": "Software specification", "b": "Project collaboration", "c": "Scope creep", "d": "Project feasibility" }, correct: "d" },
+    { chapter: 12, question: "4. Testing software to ensure that it meets the software specifications is called ____.", answers: { "a": "scope creep", "b": "software validation", "c": "rapid prototype", "d": "incremental development" }, correct: "b" },
+    { chapter: 12, question: "5. Modifying or changing the software to meet changing customer needs is called ____.", answers: { "a": "software evolution", "b": "software modification", "c": "rapid prototyping", "d": "incremental development" }, correct: "a" },
+    { chapter: 12, question: "6. A(n) ____ is a standard or typical example that gives the end user a good idea of what they will see when their application is completed.", answers: { "a": "flowchart", "b": "prototype", "c": "data dictionary", "d": "design document" }, correct: "b" },
+    { chapter: 12, question: "7. In the ____ model of software development, the fundamental processes involved in creating the program are represented as phases. The output from each phase is used as the input to the next phase.", answers: { "a": "build and fix", "b": "waterfall", "c": "rapid prototyping", "d": "spiral" }, correct: "b" },
+    { chapter: 12, question: "8. In the ____ model of software development, the developer writes a program and continues to modify it until the system is functional.", answers: { "a": "rapid prototype", "b": "incremental", "c": "waterfall", "d": "build and fix" }, correct: "d" },
+    { chapter: 12, question: "9. With ____ tools are available that allow end users to work with prototypes of the screens and other interfaces.", answers: { "a": "incremental development", "b": "rapid prototyping", "c": "build and fix", "d": "waterfall" }, correct: "b" },
+    { chapter: 12, question: "10. ____ is a software modeling process that enables system developers to create a blueprint showing the overall functionality of the program being engineered and provides a way for the client and the developer to communicate.", answers: { "a": "SDLC", "b": "Scope creep", "c": "UML", "d": "Prototyping" }, correct: "c" },
+    { chapter: 12, question: "11. ____ describe a system's behavior from a user's standpoint.", answers: { "a": "Classes", "b": "Objects", "c": "Use cases", "d": "States" }, correct: "c" },
+    { chapter: 12, question: "12. The UML ____ diagram shows how one class communicates with another by sending messages back and forth.", answers: { "a": "class", "b": "sequence", "c": "collaboration", "d": "state" }, correct: "b" },
+    { chapter: 12, question: "13. A(n) ____ diagram shows the events that occur within a use case or within an object's behavior.", answers: { "a": "class", "b": "activity", "c": "collaboration", "d": "use case" }, correct: "b" },
+    { chapter: 12, question: "14. A(n) ____ is a combination of symbols and text that provide a visual description of a process.", answers: { "a": "class", "b": "flowchart", "c": "object", "d": "component" }, correct: "b" },
+    { chapter: 12, question: "15. ____ occurs when new changes are continually added to a project thus changing the proposed completion date so that the project is never completed, but is instead in constant improvement mode.", answers: { "a": "SDLC", "b": "Prototyping", "c": "Scope creep", "d": "Testing" }, correct: "c" },
+    { chapter: 12, question: "16. The ____ is the leader of the team and is responsible for choosing the right players for the right positions.", answers: { "a": "database administrator", "b": "project manager", "c": "client", "d": "programmer" }, correct: "b" },
+    { chapter: 12, question: "17. The ____ is created by reviewing the screens and reports the end user would like included in the application and determining which fields are essential to the application.", answers: { "a": "use case", "b": "data dictionary", "c": "class diagram", "d": "sequence diagram" }, correct: "b" },
+    { chapter: 12, question: "18. The ____ is the interface between the testers, developers, and end users during the creation and early release cycles of the product.", answers: { "a": "project manager", "b": "programmer", "c": "database administrator", "d": "customer relations representative" }, correct: "d" },
+    { chapter: 12, question: "19. The ____ diagram shows how system elements work together to accomplish the system's objectives.", answers: { "a": "activity", "b": "component", "c": "collaboration", "d": "deployment" }, correct: "c" },
+    { chapter: 12, question: "20. Software engineers and end users can both use the ____ to achieve a clearer understanding of the data available for use in reports, screens, file transfers, and other data operations.", answers: { "a": "data dictionary", "b": "class diagram", "c": "sequence diagram", "d": "use case" }, correct: "a" },
+    { chapter: 13, question: "1. A(n) ____ is an unwelcome system intruder with malicious intent.", answers: { "a": "honey pot", "b": "software engineer", "c": "cracker", "d": "spammer" }, correct: "c" },
+    { chapter: 13, question: "2. The term ____ is used to describe the process of subverting the phone system in order to get free service.", answers: { "a": "phreaking", "b": "honey pot", "c": "biometrics", "d": "callback" }, correct: "a" },
+    { chapter: 13, question: "3. A(n) ____ is a cracker motivated by the challenge of breaking into a system.", answers: { "a": "script kiddie", "b": "Trojan horse", "c": "undirected hacker", "d": "directed hacker" }, correct: "c" },
+    { chapter: 13, question: "4. A(n) ____ is generally a cracker motivated by greed and/or politics.", answers: { "a": "undirected hacker", "b": "script kiddies", "c": "Trojan horse", "d": "directed hacker" }, correct: "d" },
+    { chapter: 13, question: "5. A(n) ____ is an amateur hacker that simply uses the hacking tools that have been developed by others.", answers: { "a": "cracker", "b": "reverse engineer", "c": "script kiddie", "d": "Trojan horse" }, correct: "c" },
+    { chapter: 13, question: "6. Cracking into a system as a political act is known as ____.", answers: { "a": "hacktivism", "b": "repudiation", "c": "social engineering", "d": "phreaking" }, correct: "a" },
+    { chapter: 13, question: "7. An anonymous document that justifies cracking into a systems as an ethical exercise is called ____.", answers: { "a": "spyware", "b": "the Hacker's Manifesto", "c": "the cracker bible", "d": "Phreaker's Way" }, correct: "b" },
+    { chapter: 13, question: "8. ____ are shortcuts into programs created by system designers to facilitate system maintenance but used and abused by crackers.", answers: { "a": "Checksums", "b": "Heuristics", "c": "Backdoors", "d": "Bots" }, correct: "c" },
+    { chapter: 13, question: "9. A(n) ____ occurs when a program tries to place more information into a memory location than it can handle.", answers: { "a": "access attack", "b": "buffer overflow", "c": "virus attack", "d": "modification attack" }, correct: "b" },
+    { chapter: 13, question: "10. Code designed to breach your system security and threaten your digital information is known as ____.", answers: { "a": "malicious code", "b": "digital certificates", "c": "honey pots", "d": "patents" }, correct: "a" },
+    { chapter: 13, question: "11. A(n) ____ is an uninvited guest program on your computer with the potential to damage files and the operating system.", answers: { "a": "proxy firewall", "b": "sniffer", "c": "virus", "d": "DMZ" }, correct: "c" },
+    { chapter: 13, question: "12. A(n) ____ is a software program that can roam the Internet autonomously.", answers: { "a": "cookie", "b": "digital certificate", "c": "honey pot", "d": "bot" }, correct: "d" },
+    { chapter: 13, question: "13. A(n) ____ is a software program that allows the user to listen in on network traffic.", answers: { "a": "Trojan horse", "b": "sniffer", "c": "worm", "d": "honey pot" }, correct: "b" },
+    { chapter: 13, question: "14. Transforming original data into coded data so that only authorized parties can interpret it is known as ____.", answers: { "a": "authentication", "b": "packet filtering", "c": "piracy", "d": "encryption" }, correct: "d" },
+    { chapter: 13, question: "15. The term ____ is used to describe biological identification, such as fingerprints, voice dynamics, or retinal scans.", answers: { "a": "biometrics", "b": "cookie", "c": "ergonomics", "d": "hacktivism" }, correct: "a" },
+    { chapter: 13, question: "16. A(n) ____ firewall establishes a new link between each packet of information and its destination.", answers: { "a": "proxy", "b": "digital", "c": "biometric", "d": "packet-filtering" }, correct: "a" },
+    { chapter: 13, question: "17. ____ are the moral principles for judging right or wrong behavior held by an individual or group.", answers: { "a": "Digital certificates", "b": "Laws", "c": "Ethics", "d": "Ergonomics" }, correct: "c" },
+    { chapter: 13, question: "18. ____ is the illegal copying of software.", answers: { "a": "Software piracy", "b": "Biometrics", "c": "Social engineering", "d": "Dumpster diving" }, correct: "a" },
+    { chapter: 13, question: "19. ____ is a catchall phrase for programs that sit on your computer, with or without your knowledge, observing your computer activities.", answers: { "a": "Cookie", "b": "Encryption", "c": "Spyware", "d": "Social engineering" }, correct: "c" },
+    { chapter: 13, question: "20. A(n) ____ is characterized by three things: targets that might be attacked, agents or attackers, and events.", answers: { "a": "risk", "b": "callback", "c": "copyright", "d": "threat" }, correct: "d" },
+    { chapter: 14, question: "1. ____ instructions are processed sequentially by fetching an instruction from memory, and then executing that instruction.", answers: { "a": "Binary", "b": "MRAM", "c": "DRAM", "d": "USB" }, correct: "a" },
+    { chapter: 14, question: "2. A(n) ____ is a theoretical framework, or a way of doing things.", answers: { "a": "expert system", "b": "paradigm", "c": "polymer", "d": "MRAM" }, correct: "b" },
+    { chapter: 14, question: "3. ____ is the study of matter and radiation at the atomic level.", answers: { "a": "Fuzzy logic", "b": "Pattern recognition", "c": "Robotics", "d": "Quantum mechanics" }, correct: "d" },
+    { chapter: 14, question: "4. A specialized computer designed to record and play back video content from cable and satellite sources is called a(n) ____.", answers: { "a": "expert system", "b": "digital video recorder", "c": "quantum computer", "d": "robot" }, correct: "b" },
+    { chapter: 14, question: "5. ____ is a method of splitting a laser beam and using a device called a spatial light modulator to store full pages of information in layers on a crystal material.", answers: { "a": "Fuzzy logic", "b": "Pattern recognition", "c": "Holographic storage", "d": "Speech recognition" }, correct: "c" },
+    { chapter: 14, question: "6. ____ functions as erasable, rewritable ROM memory.", answers: { "a": "Flash memory", "b": "Natural language processing", "c": "Speech recognition", "d": "Machine learning" }, correct: "a" },
+    { chapter: 14, question: "7. Which of the following terms describes flash memory in a small, durable portable case that can be plugged into a USB port of a computer and used in the same manner as a disk drive?", answers: { "a": "USB cache", "b": "USB port", "c": "USB disk", "d": "USB drive" }, correct: "d" },
+    { chapter: 14, question: "8. Which of the following terms describes memory that uses the polarization of microscopic magnetic layers to store ones and zeros that remain after the power source is removed?", answers: { "a": "DRAM", "b": "MRAM", "c": "ROM", "d": "SRAM" }, correct: "b" },
+    { chapter: 14, question: "9. ____ is the science and engineering of making intelligent machines.", answers: { "a": "Nanotechnology", "b": "Magnetic storage", "c": "Quantum mechanics", "d": "Artificial intelligence" }, correct: "d" },
+    { chapter: 14, question: "10. ____ is a superset of conventional logic that has been extended to handle the concept of partial truth.", answers: { "a": "Neural networks", "b": "Robotics", "c": "Fuzzy logic", "d": "Speech recognition" }, correct: "c" },
+    { chapter: 14, question: "11. ____ are well suited for applications such as visual speech recognition applications.", answers: { "a": "DVRs", "b": "Quantum computers", "c": "Turing tests", "d": "Neural networks" }, correct: "d" },
+    { chapter: 14, question: "12. A(n) ____ is a computer program that simulates the judgement and behavior of a human or an organization that has expert knowledge and experience in a particular field.", answers: { "a": "flash memory", "b": "neural network", "c": "expert system", "d": "USB drive" }, correct: "c" },
+    { chapter: 14, question: "13. Telephone support and hot lines, such as a poison control center, can make use of ____.", answers: { "a": "expert systems", "b": "MRAM", "c": "SDRAM", "d": "ROM" }, correct: "a" },
+    { chapter: 14, question: "14. ____ processing involves computer applications that can recognize and interact with natural language text.", answers: { "a": "Assembly language", "b": "Machine language", "c": "High-level language", "d": "Natural language" }, correct: "d" },
+    { chapter: 14, question: "15. The science of ____ is primarily concerned with the mechanics and electronics that are used to carry out the results of the other areas of artificial intelligence.", answers: { "a": "fuzzy logic", "b": "robotics", "c": "pattern recognition", "d": "natural language processing" }, correct: "b" },
+    { chapter: 14, question: "16. It is thought that each neuron in the brain may have as many as ____ connections to adjacent neurons.", answers: { "a": "10", "b": "100", "c": "10,000", "d": "1,000,000" }, correct: "c" },
+    { chapter: 14, question: "17. In order for a computer to emulate human behavior and reasoning, it needs to have the ability to ____.", answers: { "a": "walk", "b": "talk", "c": "learn", "d": "hear" }, correct: "c" },
+    { chapter: 14, question: "18. The concept of each person interacting with many, sometimes invisible computers has been named '____' by computer scientist Mark Weiser.", answers: { "a": "1984", "b": "ubiquitous computing", "c": "massive parallelism", "d": "nanotechnology" }, correct: "b" },
+    { chapter: 14, question: "19. Effort is ongoing to make ____ available on cell phones.", answers: { "a": "HDTV", "b": "streaming audio", "c": "VCRs", "d": "streaming video" }, correct: "d" },
+    { chapter: 14, question: "20. At present, flash memories come in sizes up to ____.", answers: { "a": "1 MB", "b": "100 MB", "c": "2 GB", "d": "4 TB" }, correct: "c" }
+];
+
+
+const quizContainer = document.getElementById('quiz');
+let currentChapter = -1;
+
+quizData.forEach((item, index) => {
+  if (item.chapter !== currentChapter) {
+    currentChapter = item.chapter;
+    const chapterTitle = document.createElement('h2');
+    chapterTitle.classList.add('chapter-title');
+    chapterTitle.innerText = `Chapter ${currentChapter}`;
+    quizContainer.appendChild(chapterTitle);
+  }
+
+  const questionElement = document.createElement('div');
+  questionElement.classList.add('question-container');
+  questionElement.id = `q-${index}`;
+
+  const questionText = document.createElement('div');
+  questionText.classList.add('question');
+  questionText.innerHTML = item.question;
+  questionElement.appendChild(questionText);
+
+  const answersElement = document.createElement('div');
+  answersElement.classList.add('answers');
+
+  for (const letter in item.answers) {
+    const answer = document.createElement('div');
+    answer.innerHTML = `${letter}. ${item.answers[letter]}`;
+    answer.dataset.letter = letter;
+    
+    answer.addEventListener('click', (event) => {
+      const parentContainer = event.target.closest('.question-container');
+      
+      if (parentContainer.classList.contains('answered')) {
+        return;
+      }
+      parentContainer.classList.add('answered');
+
+      const allAnswers = answersElement.querySelectorAll('div');
+
+      allAnswers.forEach(ans => {
+        if (ans.dataset.letter === item.correct) {
+          ans.classList.add('correct');
+        } else {
+          ans.classList.add('incorrect');
+        }
+      });
+    });
+    answersElement.appendChild(answer);
+  }
+
+  questionElement.appendChild(answersElement);
+  quizContainer.appendChild(questionElement);
+});
+
+</script>
+
+</body>
+</html>

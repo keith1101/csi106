@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive CSI Exam</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #343a40;
+  }
+  .header-container {
+      text-align: center;
+      margin-bottom: 20px;
+  }
+  h1 {
+    color: #0056b3;
+  }
+  #timer {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #28a745;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      display: inline-block;
+      background-color: #fff;
+      min-width: 180px;
+  }
+  #timer.times-up {
+      color: #dc3545;
+  }
+  .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-radius: 8px;
+  }
+  .controls label {
+      font-weight: 500;
+  }
+  .controls input[type="number"] {
+      width: 60px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+  }
+  .controls button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.3s ease;
+  }
+  #startBtn { background-color: #28a745; }
+  #startBtn:hover { background-color: #218838; }
+  #randomizeBtn { background-color: #007bff; }
+  #randomizeBtn:hover { background-color: #0069d9; }
+
+  .question-container {
+    margin-bottom: 25px;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  .question-container.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .question-container:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  .question {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  .answers div {
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .answers div:hover {
+      background-color: #e2e6ea;
+  }
+  .correct {
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    color: #155724;
+    font-weight: bold;
+  }
+  .incorrect {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+    color: #721c24;
+  }
+  .answered .answers div {
+      cursor: default;
+  }
+   .answered .answers div:not(.correct) {
+      opacity: 0.7;
+  }
+   .answered .answers div:hover {
+      background-color: initial;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-container">
+    <h1>Interactive CSI Exam</h1>
+    <div id="timer">00:00</div>
+</div>
+
+<div class="controls">
+    <label for="minutes">Set Time (minutes):</label>
+    <input type="number" id="minutes" value="60" min="1">
+    <button id="startBtn">Start Timer</button>
+    <button id="randomizeBtn">Randomize Questions & Answers</button>
+</div>
+
+<div id="quiz"></div>
+
+<script>
+const originalQuizData = [
+    { question: "With ____, multiple computers can share one Internet connection.", answers: { "a": "UDP", "b": "TCP/IP", "c": "DHCP", "d": "NAT" }, correct: "d" },
+    { question: "____ occur when the hashing algorithm generates the same relative key for more than one original key value.", answers: { "a": "Clusters", "b": "Compressions", "c": "Directories", "d": "Collisions" }, correct: "d" },
+    { question: "The ____ is created by reviewing the screens and reports the end user would like included in the application and determining which fields are essential to the application.", answers: { "a": "use case", "b": "data dictionary", "c": "sequence diagram", "d": "class diagram" }, correct: "b" },
+    { question: "Which of the following routines implements two list structures to perform sorting operations?", answers: { "a": "selection sort", "b": "bubble", "c": "merge sort", "d": "quicksort" }, correct: "c" },
+    { question: "When did the first generation computer start?", answers: { "a": "1940", "b": "1920", "c": "1950", "d": "1960" }, correct: "c" },
+    { question: "Which of the following is a valid SQL word used to return data in descending order?", answers: { "a": "REV", "b": "DESC", "c": "OPP", "d": "BOTTOM" }, correct: "b" },
+    { question: "The ____ sort starts at the first value in the list and then processes each element looking for the smallest value.", answers: { "a": "selection", "b": "merge", "c": "counting", "d": "radix" }, correct: "a" },
+    { question: "____ file access allows you to mimic the look of a database table by storing information in the file row by row, similar to a database record.", answers: { "a": "Binary", "b": "Random", "c": "Sequential", "d": "Hash" }, correct: "c" },
+    { question: "Which of the following computer scientists invented the World Wide Web?", answers: { "a": "E.F. Codd", "b": "Marc Andreesen", "c": "Donald Knuth", "d": "Tim Berners-Lee" }, correct: "d" },
+    { question: "Crawling makes use of a special program called a bot or ____.", answers: { "a": "butterfly", "b": "centipede", "c": "spider", "d": "bug" }, correct: "c" },
+    { question: "A ____ is a software program that can roam the Internet autonomously.", answers: { "a": "digital certificate", "b": "bot", "c": "cookie", "d": "honey pot" }, correct: "b" },
+    { question: "A ____ is a routine of logic used for determining how hash values are created.", answers: { "a": "MFT", "b": "file system", "c": "hashing algorithm", "d": "cluster" }, correct: "c" },
+    { question: "The term ____ is used to describe biological identification, such as fingerprints, voice dynamics, or retinal scans.", answers: { "a": "biometrics", "b": "hacktivism", "c": "ergonomics", "d": "cookie" }, correct: "a" },
+    { question: "Which of following is a valid SQL command for constructing a table?", answers: { "a": "BUILD TABLE", "b": "MAKE TABLE", "c": "SETUP TABLE", "d": "CREATE TABLE" }, correct: "d" },
+    { question: "Which of the following commands can be used to add new rows of data to a table?", answers: { "a": "INSERT", "b": "INCLUDE", "c": "INCREASE", "d": "ADD" }, correct: "a" },
+    { question: "The term ____ is used to describe a type of bot that can roam a network looking for vulnerable systems to replicate itself onto those systems.", answers: { "a": "reverse engineer", "b": "Trojan horse", "c": "worm", "d": "proxy firewall" }, correct: "c" },
+    { question: "HTML and the Web connect one page to another through ____.", answers: { "a": "higherjoins", "b": "hyperlinks", "c": "overlinks", "d": "cyberbridges" }, correct: "b" },
+    { question: "The ____ keeps track of which files are using which clusters.", answers: { "a": "directory", "b": "random area", "c": "file allocation table", "d": "hash key" }, correct: "c" },
+    { question: "____ is a software modeling process that enables system developers to create a blueprint showing the overall functionality of the program being engineered and provides a way for the client and the developer to communicate.", answers: { "a": "Scope creep", "b": "SDLC", "c": "UML", "d": "Prototyping" }, correct: "c" },
+    { question: "Which of the following is the second generation years?", answers: { "a": "1624", "b": "1623", "c": "The late 1950s and the first half of the 1960s", "d": "1625" }, correct: "c" },
+    { question: "The node that begins the tree is called the ____.", answers: { "a": "branch", "b": "child", "c": "root", "d": "leaf" }, correct: "c" },
+    { question: "With ____ the application is developed and released in a series of software releases.", answers: { "a": "waterfall prototyping", "b": "build and fix prototyping", "c": "incremental development", "d": "rapid prototyping" }, correct: "c" },
+    { question: "The computer logically organizes source code into ____ or groups of related computer commands that perform a task.", answers: { "a": "methods", "b": "functions", "c": "procedures", "d": "routines" }, correct: "c" },
+    { question: "Which of the following data structures adapts least efficiently to dynamic memory allocation.", answers: { "a": "stacks", "b": "queues", "c": "arrays", "d": "linked lists" }, correct: "c" },
+    { question: "The ____ is the interface between the testers, developers, and end users during the creation and early release cycles of the product.", answers: { "a": "programmer", "b": "customer relations representative", "c": "database administrator", "d": "project manager" }, correct: "b" },
+    { question: "The set of rules that dictates how databases are designed is called ____.", answers: { "a": "invocation", "b": "customization", "c": "standardization", "d": "normalization" }, correct: "d" },
+    { question: "What is binary code or machine code?", answers: { "a": "The stored program concept", "b": "The large memory concept", "c": "The numeric language of the computer based on the binary number system of 1s and 0s", "d": "The virtual memory concept" }, correct: "c" },
+    { question: "A ____ defines how one entity works with or relates to another.", answers: { "a": "relationship", "b": "arrangement", "c": "connection", "d": "union" }, correct: "a" },
+    { question: "Which of the following data structures uses a tail pointer?", answers: { "a": "binary tree", "b": "stack", "c": "array", "d": "queue" }, correct: "d" },
+    { question: "____ attacks seek to create a false impression that an event did not occur when it did, or did occur when it did not.", answers: { "a": "Repudiation", "b": "DMZ", "c": "DoS", "d": "Modification" }, correct: "a" },
+    { question: "The ____ sort starts with the last element in the list and compares its value to that of the item just above it in the list order.", answers: { "a": "bubble", "b": "insertion", "c": "quick", "d": "heap" }, correct: "a" },
+    { question: "A ____ is characterized by three things: targets that might be attacked, agents or attackers, and events.", answers: { "a": "risk", "b": "threat", "c": "callback", "d": "copyright" }, correct: "b" },
+    { question: "How many vacuum tubes does the ENIAC have?", answers: { "a": "15000", "b": "16000", "c": "18000", "d": "17000" }, correct: "b" },
+    { question: "Using ____, a packet can just be sent on an alternate line if the desired line is damaged or busy.", answers: { "a": "linkers", "b": "hubs", "c": "routers", "d": "switches" }, correct: "c" },
+    { question: "____ is the illegal copying of software.", answers: { "a": "Software piracy", "b": "Dumpster diving", "c": "Biometrics", "d": "Social engineering" }, correct: "a" },
+    { question: "____ is the encryption technology that converts the data within a file using an encryption algorithm and key value to nonreadable information.", answers: { "a": "NTFS", "b": "FAT", "c": "MFT", "d": "Encrypting File System" }, correct: "d" },
+    { question: "How many switches need for arithmetic operations does the ENIAC have?", answers: { "a": "8000", "b": "6000", "c": "7000", "d": "5000" }, correct: "b" },
+    { question: "Software engineers and end users can both use the ____ to achieve a clearer understanding of the data available for use in reports, screens, file transfers, and other data operations.", answers: { "a": "sequence diagram", "b": "use case", "c": "class diagram", "d": "data dictionary" }, correct: "d" },
+    { question: "A ____ occurs when a program tries to place more information into a memory location than it can handle.", answers: { "a": "modification attack", "b": "virus attack", "c": "access attack", "d": "buffer overflow" }, correct: "d" },
+    { question: "____ shows the numeric occurrences between entities in an ER model.", answers: { "a": "Dependency", "b": "Functionality", "c": "Transitivity", "d": "Cardinality" }, correct: "d" },
+    { question: "When the columns are used to determine the sort order of information they are called ____.", answers: { "a": "markers", "b": "keys", "c": "tokens", "d": "flags" }, correct: "b" },
+    { question: "____ occurs when files have clusters scattered in different locations on the storage medium rather than in contiguous locations.", answers: { "a": "Hashing", "b": "Disk fragmentation", "c": "Clusterization", "d": "Disk striping" }, correct: "b" },
+    { question: "The ____ improves performance by minimizing movement of the read/write heads.", answers: { "a": "directory", "b": "hash key", "c": "file system", "d": "disk defragmenter" }, correct: "d" },
+    { question: "The ____ protocol allows each computer to automatically be assigned an IP address each time it is started up.", answers: { "a": "FTP", "b": "DHCP", "c": "TCP", "d": "HTTP" }, correct: "b" },
+    { question: "A binary search tree contains ____ components.", answers: { "a": "four", "b": "three", "c": "two", "d": "eight" }, correct: "b" },
+    { question: "A ____ is a software program that allows the user to listen in on network traffic.", answers: { "a": "honey pot", "b": "Trojan horse", "c": "sniffer", "d": "worm" }, correct: "c" },
+    { question: "____ are the moral principles for judging right or wrong behavior held by an individual or group.", answers: { "a": "Ethics", "b": "Ergonomics", "c": "Digital certificates", "d": "Laws" }, correct: "a" },
+    { question: "A ____ key is defined as a column in one table that is part of the primary key in another.", answers: { "a": "secondary", "b": "composite", "c": "auxiliary", "d": "foreign" }, correct: "d" },
+    { question: "When was mechanical calculator invented by Blaise Pascal?", answers: { "a": "1801", "b": "1694", "c": "1642", "d": "1622" }, correct: "c" },
+    { question: "A key that is made up of more than one column is called which of the following?", answers: { "a": "composite", "b": "joined", "c": "aggregate", "d": "union" }, correct: "a" },
+    { question: "The ____ protocol establishes a link from an e-mail client to a mail server.", answers: { "a": "SMTP", "b": "POP3", "c": "IMAP", "d": "HTTP" }, correct: "a" },
+    { question: "The UML ____ diagram shows how one class communicates with another by sending messages back and forth.", answers: { "a": "collaboration", "b": "class", "c": "sequence", "d": "state" }, correct: "c" },
+    { question: "____ describe a system's behavior from a user's standpoint.", answers: { "a": "Classes", "b": "Objects", "c": "States", "d": "Use cases" }, correct: "d" },
+    { question: "The port number can be analogized to which of the following address components?", answers: { "a": "zip code", "b": "street address", "c": "city", "d": "apartment number" }, correct: "d" },
+    { question: "A ____ is a memory cell that contains the address of another memory cell as its data.", answers: { "a": "token", "b": "element", "c": "pointer", "d": "index" }, correct: "c" },
+    { question: "____ is the process of reducing the size of a file or folder.", answers: { "a": "File compression", "b": "Random filing", "c": "Sequential filing", "d": "Disk fragmentation" }, correct: "a" },
+    { question: "Backtracking is most efficiently accomplished by using a ____.", answers: { "a": "stack", "b": "tree", "c": "array", "d": "queue" }, correct: "a" },
+    { question: "In the ____ model of software development, the fundamental processes involved in creating the program are represented as phases. The output from each phase is used as the input to the next phase.", answers: { "a": "build and fix", "b": "spiral", "c": "waterfall", "d": "rapid prototyping" }, correct: "c" },
+    { question: "The problem of having to remember IP addresses was solved by allowing Web servers to have ____ names.", answers: { "a": "locator", "b": "resource", "c": "domain", "d": "range" }, correct: "c" },
+    { question: "____ provides the ability to assign access rights to files and directories.", answers: { "a": "NTFS", "b": "FAT12", "c": "FAT32", "d": "FAT24" }, correct: "a" },
+    { question: "____ are shortcuts into programs created by system designers to facilitate system maintenance but used and abused by crackers.", answers: { "a": "Backdoors", "b": "Bots", "c": "Heuristics", "d": "Checksums" }, correct: "a" },
+    { question: "Testing software to ensure that it meets the software specifications is called ____.", answers: { "a": "software validation", "b": "rapid prototype", "c": "incremental development", "d": "scope creep" }, correct: "a" },
+    { question: "Sectors are grouped together to form ____.", answers: { "a": "directories", "b": "MFTs", "c": "file systems", "d": "clusters" }, correct: "d" },
+    { question: "With arrays, the ____ is used to specify the distance between memory locations.", answers: { "a": "offset", "b": "width", "c": "length", "d": "address" }, correct: "a" },
+    { question: "In Java, which punctuation mark tells the computer that the end of the statement has been reached?", answers: { "a": "comma", "b": "semicolon", "c": "colon", "d": "period" }, correct: "b" },
+    { question: "A ____ is a drive or partition on a drive that is formatted with a file system.", answers: { "a": "hash key", "b": "volume", "c": "hash algorithm", "d": "CPU" }, correct: "b" },
+    { question: "____ determines whether the project is worth doing, and specifying the advantages and disadvantages of this application.", answers: { "a": "Scope creep", "b": "Project feasibility", "c": "Software specification", "d": "Project collaboration" }, correct: "b" },
+    { question: "The acronym HTTP stands for ____.", answers: { "a": "Heuristic Transport Type Protocol", "b": "Hypertext Transfer Protocol", "c": "Hypertext Transition Protocol", "d": "Hexadecimal Task Test Protocol" }, correct: "b" },
+    { question: "A ____ contains a group of the smallest units that can be accessed on a disk.", answers: { "a": "file system", "b": "FAT", "c": "NTFS", "d": "cluster" }, correct: "d" },
+    { question: "The total pool of IPv4 addresses is separated into groups, called ____.", answers: { "a": "aggregations", "b": "classes", "c": "clusters", "d": "entities" }, correct: "b" },
+    { question: "Subnets are defined through the use of a subnet ____.", answers: { "a": "sentinel", "b": "screen", "c": "mask", "d": "filter" }, correct: "c" },
+    { question: "The ____ contains the information needed for the system to be able to know how to access the volume.", answers: { "a": "directory", "b": "overflow area", "c": "partition boot sector", "d": "file system" }, correct: "c" },
+    { question: "A ____ is a standard or typical example that gives the end user a good idea of what they will see when their application is completed.", answers: { "a": "flowchart", "b": "data dictionary", "c": "prototype", "d": "design document" }, correct: "c" },
+    { question: "A two dimensional array declared with size [3] [3] may contain how many elements?", answers: { "a": "nine", "b": "six", "c": "sixteen", "d": "three" }, correct: "a" },
+    { question: "The ____ protocol establishes a virtual circuit with the destination computer to transmit packets.", answers: { "a": "IP", "b": "HTTP", "c": "TCP", "d": "FTP" }, correct: "c" },
+    { question: "The term ____ implies reading and writing data in order, from the beginning.", answers: { "a": "sequential access", "b": "hashing", "c": "collision", "d": "random access" }, correct: "a" },
+    { question: "Modifying or changing the software to meet changing customer needs is called ____.", answers: { "a": "software modification", "b": "incremental development", "c": "software evolution", "d": "rapid prototyping" }, correct: "c" },
+    { question: "____ determine the functions of the software and any constraints or requirements.", answers: { "a": "Data dictionaries", "b": "Use cases", "c": "Software specifications", "d": "UMLs" }, correct: "c" },
+    { question: "A ____ is a special type of file that occupies its own space and specifies one or more columns that determine how the information stored in a table is organized.", answers: { "a": "tab", "b": "field", "c": "index", "d": "identifier" }, correct: "c" },
+    { question: "What type of data can be stored in an array generated by the statement, 'int[] aGrades = new int[5]'?", answers: { "a": "integers", "b": "doubles", "c": "strings", "d": "floats" }, correct: "a" },
+    { question: "Which of the following computer scientists made significant contributions to relational database management?", answers: { "a": "Grace Hopper", "b": "Alan Turing", "c": "E.F. Codd", "d": "John Von Neumann" }, correct: "c" },
+    { question: "The index or ____ tells the computer which memory cell to access in the array.", answers: { "a": "superscript", "b": "subscript", "c": "pointer", "d": "arrow" }, correct: "b" }
+];
+
+
+// --- Global Variables ---
+const quizContainer = document.getElementById('quiz');
+const timerDisplay = document.getElementById('timer');
+const minutesInput = document.getElementById('minutes');
+const startBtn = document.getElementById('startBtn');
+const randomizeBtn = document.getElementById('randomizeBtn');
+
+let currentQuizData = [];
+let countdown; // To hold the setInterval instance
+
+// --- Core Functions ---
+
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {Array} array The array to shuffle.
+ */
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+/**
+ * Prepares the quiz data by adding correct answer text and making a deep copy.
+ */
+function prepareQuizData() {
+  currentQuizData = JSON.parse(JSON.stringify(originalQuizData));
+  currentQuizData.forEach(q => {
+    q.correctAnswerText = q.answers[q.correct];
+  });
+}
+
+/**
+ * Renders the entire quiz in the DOM.
+ * @param {Array} data The quiz data array to render.
+ */
+function renderQuiz(data) {
+  quizContainer.innerHTML = '';
+  data.forEach((item, index) => {
+    const questionElement = document.createElement('div');
+    questionElement.classList.add('question-container');
+    questionElement.id = `q-${index}`;
+
+    const questionText = document.createElement('div');
+    questionText.classList.add('question');
+    questionText.innerHTML = `${index + 1}. ${item.question}`;
+    questionElement.appendChild(questionText);
+
+    const answersElement = document.createElement('div');
+    answersElement.classList.add('answers');
+
+    const answerOptions = item.shuffledAnswers || Object.values(item.answers);
+
+    answerOptions.forEach((answerText, i) => {
+      const answer = document.createElement('div');
+      const choiceLetter = String.fromCharCode(97 + i); // a, b, c, d
+      answer.innerHTML = `${choiceLetter}. ${answerText}`;
+      answer.dataset.text = answerText;
+      
+      answer.addEventListener('click', handleAnswerClick);
+      answersElement.appendChild(answer);
+    });
+
+    questionElement.appendChild(answersElement);
+    quizContainer.appendChild(questionElement);
+  });
+}
+
+// --- Event Handlers ---
+
+/**
+ * Handles the logic when a user clicks an answer.
+ * @param {Event} event The click event.
+ */
+function handleAnswerClick(event) {
+  const selectedAnswerDiv = event.currentTarget;
+  const parentContainer = selectedAnswerDiv.closest('.question-container');
+  
+  if (parentContainer.classList.contains('answered')) {
+    return;
+  }
+  parentContainer.classList.add('answered');
+
+  const questionIndex = parseInt(parentContainer.id.split('-')[1]);
+  const questionItem = currentQuizData[questionIndex];
+  
+  const allAnswerDivs = parentContainer.querySelectorAll('.answers div');
+  allAnswerDivs.forEach(div => {
+    if (div.dataset.text === questionItem.correctAnswerText) {
+      div.classList.add('correct');
+    } else {
+      div.classList.add('incorrect');
+    }
+  });
+}
+
+/**
+ * Handles the timer logic.
+ * @param {number} seconds The total duration of the timer.
+ */
+function timer(seconds) {
+  clearInterval(countdown);
+
+  const now = Date.now();
+  const then = now + seconds * 1000;
+  displayTimeLeft(seconds);
+
+  countdown = setInterval(() => {
+    const secondsLeft = Math.round((then - Date.now()) / 1000);
+    if (secondsLeft < 0) {
+      clearInterval(countdown);
+      timerDisplay.textContent = "Time's Up!";
+      timerDisplay.classList.add('times-up');
+      quizContainer.querySelectorAll('.question-container').forEach(el => el.classList.add('disabled'));
+      return;
+    }
+    displayTimeLeft(secondsLeft);
+  }, 1000);
+}
+
+/**
+ * Displays the time in a 00:00 format.
+ * @param {number} seconds The seconds to display.
+ */
+function displayTimeLeft(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainderSeconds = seconds % 60;
+  const display = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+  timerDisplay.textContent = display;
+  document.title = `${display} - CSI Exam`;
+}
+
+// --- Button Event Listeners ---
+
+startBtn.addEventListener('click', () => {
+    const minutes = parseInt(minutesInput.value);
+    if (isNaN(minutes) || minutes <= 0) {
+        alert("Please enter a valid number of minutes.");
+        return;
+    }
+    timerDisplay.classList.remove('times-up');
+    quizContainer.querySelectorAll('.question-container').forEach(el => el.classList.remove('disabled'));
+    timer(minutes * 60);
+});
+
+randomizeBtn.addEventListener('click', () => {
+    shuffleArray(currentQuizData);
+    currentQuizData.forEach(q => {
+        let answerOptions = Object.values(q.answers);
+        shuffleArray(answerOptions);
+        q.shuffledAnswers = answerOptions;
+    });
+    renderQuiz(currentQuizData);
+});
+
+// --- Initial Load ---
+const initialMinutes = parseInt(minutesInput.value);
+displayTimeLeft(initialMinutes * 60);
+prepareQuizData();
+renderQuiz(currentQuizData);
+
+</script>
+
+</body>
+</html>
